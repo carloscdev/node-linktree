@@ -1,0 +1,21 @@
+version: '3.3'
+
+services:
+  postgres:
+    image: postgres:14.3
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=linktree
+      - POSTGRES_USER=carloscdev
+      - POSTGRES_PASSWORD=carloscdev
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=carlos_cdo@outlook.com
+      - PGADMIN_DEFAULT_PASSWORD=root
+    ports:
+      - "5050:80"
