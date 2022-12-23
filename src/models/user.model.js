@@ -2,13 +2,12 @@ const { Model, DataTypes, Sequelize } = require('sequelize');
 
 const USER_TABLE = 'users';
 
+const USER_ROLES = {
+  ADMIN: 'admin',
+  USER: 'user',
+};
+
 const UserModel = {
-  // id: {
-  //   allowNull: false,
-  //   primaryKey: true,
-  //   type: Sequelize.UUID,
-  //   defaultValue: Sequelize.UUIDV4,
-  // },
   id: {
     allowNull: false,
     type: DataTypes.STRING,
@@ -23,6 +22,11 @@ const UserModel = {
   password: {
     allowNull: false,
     type: DataTypes.STRING
+  },
+  role: {
+    allowNull: false,
+    type: DataTypes.ENUM(USER_ROLES.ADMIN, USER_ROLES.USER),
+    defaultValue: USER_ROLES.USER
   },
   isActive: {
     type: DataTypes.BOOLEAN,
@@ -59,4 +63,4 @@ class User extends Model {
   }
 }
 
-module.exports = { USER_TABLE, UserModel, User };
+module.exports = { USER_TABLE, UserModel, User, USER_ROLES };

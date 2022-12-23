@@ -4,8 +4,10 @@ const { USER_TABLE } = require('./user.model');
 
 const ITEM_TABLE = 'items';
 
-const LINK = 'LINK';
-const HEAD = 'HEAD';
+const ITEM_TYPES = {
+  LINK: 'LINK',
+  HEAD: 'HEAD'
+}
 
 const ItemModel = {
   id: {
@@ -19,9 +21,9 @@ const ItemModel = {
     allowNull: false,
   },
   type: {
-    type: DataTypes.ENUM(LINK, HEAD),
+    type: DataTypes.ENUM(ITEM_TYPES.LINK, ITEM_TYPES.HEAD),
     allowNull: false,
-    defaultValue: LINK,
+    defaultValue: ITEM_TYPES.LINK,
   },
   url: {
     type: DataTypes.STRING,
@@ -63,4 +65,4 @@ class Item extends Model {
   }
 }
 
-module.exports = { Item, ItemModel, ITEM_TABLE };
+module.exports = { Item, ItemModel, ITEM_TABLE, ITEM_TYPES };

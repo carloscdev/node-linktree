@@ -11,6 +11,8 @@ const {
 
 const { config } = require('./config');
 
+require('./utils/auth');
+
 const app = express();
 const port = config.port;
 const whiteList = ['http://localhost:8080', 'https://localhost:3000'];

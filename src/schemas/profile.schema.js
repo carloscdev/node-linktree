@@ -39,7 +39,6 @@ const portfolio = Joi.string().uri().messages({
 const isActive = Joi.boolean();
 
 const createProfileSchema = Joi.object({
-  userId: userId.required(),
   firstName: firstName.required(),
   lastName: lastName.required(),
   phone: phone.required(),

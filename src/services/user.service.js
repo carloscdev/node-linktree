@@ -1,4 +1,5 @@
 const boom = require('@hapi/boom');
+const { encryptPassword } = require('../utils/bcrypt.util');
 
 const { sequelize } = require('../config/database');
 const { models } = sequelize;
@@ -38,15 +39,28 @@ class UserService {
     return user;
   }
 
+  async findByEmail(email) {
+    const user =  await models.User.findOne({
+      where: { email }
+    });
+    return user;
+  }
+
   async create(data) {
-    const user = await models.User.create(data);
+    const password = await encryptPassword(data.password);
+    const user = await models.User.create({
+      ...data,
+      password
+    });
+    delete user.dataValues['password'];
     return user;
   }
 
   async updatePassword(id, data) {
     if (data.password !== data.confirmPassword)
       throw boom.badRequest('Las contraseñas no coinciden');
-    await models.User.update({ password: data.password }, { where: { id } });
+    const password = await encryptPassword(data.password);
+    await models.User.update({ password }, { where: { id } });
   }
 }
 

@@ -8,6 +8,9 @@ const {
   getUserSchema,
 } = require('../schemas/user.schema');
 
+const { validateRoleHandler, validatePassportAuth } = require('../middlewares/auth.handler');
+const { USER_ROLES } = require('../models/user.model');
+
 const UserService = require('../services/user.service');
 const service = new UserService();
 
@@ -49,12 +52,13 @@ router.post(
   }
 );
 router.patch(
-  '/password/:id',
-  validateHandler(getUserSchema, 'params'),
+  '/password',
+  validatePassportAuth('jwt'),
+  validateRoleHandler(USER_ROLES.USER, USER_ROLES.ADMIN),
   validateHandler(updateUserPasswordSchema, 'body'),
   async (req, res, next) => {
     try {
-      const { id } = req.params;
+      const id = req.user.sub;
       const body = req.body;
       await service.updatePassword(id, body)
       res.json({

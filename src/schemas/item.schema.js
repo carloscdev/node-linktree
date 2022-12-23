@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { ITEM_TYPES } = require('../models/item.model');
 
 const id = Joi.number().integer().messages({
   'any.required': 'ID es requerido',
@@ -8,7 +9,7 @@ const id = Joi.number().integer().messages({
 const title = Joi.string().messages({
   'any.required': 'Título es requerido',
 });
-const type = Joi.string().valid('LINK', 'HEAD').messages({
+const type = Joi.string().valid(ITEM_TYPES.LINK, ITEM_TYPES.HEAD).messages({
   'any.valid': 'Tipo solo debe ser LINK o HEAD',
   'any.required': 'Tipo es requerido',
 });
@@ -31,7 +32,6 @@ const createItemSchema = Joi.object({
   url,
   position: position.required(),
   isActive: isActive.required(),
-  userId: userId.required(),
 }).messages({ 'object.unknown': '{#label} no está permitido' });;
 
 const updateItemSchema = Joi.object({

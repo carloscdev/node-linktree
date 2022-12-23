@@ -4,20 +4,20 @@ const router = express.Router();
 const ItemService = require('../services/item.service');
 const service = new ItemService();
 
+const { validatePassportAuth } = require('../middlewares/auth.handler');
 const { validateHandler } = require('../middlewares/validate.handler');
 const {
   createItemSchema,
   updateItemSchema,
   getItemByIdSchema,
-  getItemByUserIdSchema,
 } = require('../schemas/item.schema');
 
 router.get(
-  '/list/:userId',
-  validateHandler(getItemByUserIdSchema, 'params'),
+  '/my-list',
+  validatePassportAuth('jwt'),
   async (req, res, next) => {
     try {
-      const { userId } = req.params;
+      const userId = req.user.sub;
       const item = await service.findAll(userId);
       res.json(item);
     } catch (error) {
@@ -27,6 +27,7 @@ router.get(
 );
 router.get(
   '/:id',
+  validatePassportAuth('jwt'),
   validateHandler(getItemByIdSchema, 'params'),
   async (req, res, next) => {
     try {
@@ -40,10 +41,12 @@ router.get(
 );
 router.post(
   '/',
+  validatePassportAuth('jwt'),
   validateHandler(createItemSchema, 'body'),
   async (req, res, next) => {
     try {
       const body = req.body;
+      body['userId'] = req.user.sub;
       const item = await service.create(body);
       res.status(201).json(item);
     } catch (error) {
@@ -53,6 +56,7 @@ router.post(
 );
 router.patch(
   '/:id',
+  validatePassportAuth('jwt'),
   validateHandler(getItemByIdSchema, 'params'),
   validateHandler(updateItemSchema, 'body'),
   async (req, res, next) => {
@@ -68,6 +72,7 @@ router.patch(
 );
 router.delete(
   '/delete/:id',
+  validatePassportAuth('jwt'),
   validateHandler(getItemByIdSchema, 'params'),
   async (req, res, next) => {
     try {

@@ -1,10 +1,10 @@
 const express = require('express');
 
+const { validatePassportAuth } = require('../middlewares/auth.handler');
 const { validateHandler } = require('../middlewares/validate.handler');
 const {
   createProfileSchema,
   updateProfileSchema,
-  getProfileByUsername,
 } = require('../schemas/profile.schema');
 
 const router = express.Router();
@@ -13,11 +13,11 @@ const ProfileService = require('../services/profile.service');
 const service = new ProfileService();
 
 router.get(
-  '/:userId',
-  validateHandler(getProfileByUsername, 'params'),
+  '/my-profile',
+  validatePassportAuth('jwt'),
   async (req, res, next) => {
     try {
-      const { userId } = req.params;
+      const userId = req.user.sub;
       const user = await service.findOne(userId);
       res.json(user);
     } catch (error) {
@@ -27,10 +27,12 @@ router.get(
 );
 router.post(
   '/',
+  validatePassportAuth('jwt'),
   validateHandler(createProfileSchema, 'body'),
   async (req, res, next) => {
     try {
       const body = req.body;
+      body['userId'] = req.user.sub;
       const user = await service.create(body);
       res.status(201).json(user);
     } catch (error) {
@@ -39,12 +41,12 @@ router.post(
   }
 );
 router.patch(
-  '/:userId',
-  validateHandler(getProfileByUsername, 'params'),
+  '/',
+  validatePassportAuth('jwt'),
   validateHandler(updateProfileSchema, 'body'),
   async (req, res, next) => {
     try {
-      const { userId } = req.params;
+      const userId = req.user.sub;
       const body = req.body;
       const user = await service.update(userId, body);
       res.json(user);
