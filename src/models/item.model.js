@@ -34,6 +34,7 @@ const ItemModel = {
     allowNull: false,
   },
   isActive: {
+    field: 'is_active',
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },

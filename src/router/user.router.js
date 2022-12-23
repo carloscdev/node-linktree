@@ -60,11 +60,8 @@ router.patch(
     try {
       const id = req.user.sub;
       const body = req.body;
-      await service.updatePassword(id, body)
-      res.json({
-        statusCode: 200,
-        message: 'Password actualizado'
-      })
+      const response = await service.updatePassword(id, body);
+      res.json(response);
     } catch (error) {
       next(error);
     }

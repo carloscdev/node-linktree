@@ -40,8 +40,8 @@ class UserService {
   }
 
   async findByEmail(email) {
-    const user =  await models.User.findOne({
-      where: { email }
+    const user = await models.User.findOne({
+      where: { email },
     });
     return user;
   }
@@ -50,7 +50,7 @@ class UserService {
     const password = await encryptPassword(data.password);
     const user = await models.User.create({
       ...data,
-      password
+      password,
     });
     delete user.dataValues['password'];
     return user;
@@ -61,6 +61,14 @@ class UserService {
       throw boom.badRequest('Las contraseñas no coinciden');
     const password = await encryptPassword(data.password);
     await models.User.update({ password }, { where: { id } });
+    return {
+      statusCode: 200,
+      message: 'Password actualizado',
+    };
+  }
+
+  async updateRecoveryToken(id, token) {
+    await models.User.update({ recoveryToken: token }, { where: { id } });
   }
 }
 

@@ -23,6 +23,11 @@ const UserModel = {
     allowNull: false,
     type: DataTypes.STRING
   },
+  recoveryToken: {
+    field: 'recovery_token',
+    allowNull: true,
+    type: DataTypes.STRING
+  },
   role: {
     allowNull: false,
     type: DataTypes.ENUM(USER_ROLES.ADMIN, USER_ROLES.USER),

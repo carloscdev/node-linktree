@@ -2,11 +2,12 @@ const express = require('express');
 
 const router = express.Router();
 
-const { signToken } = require('../utils/jwt.util');
-
 const { createUserSchema } = require('../schemas/user.schema');
 const { validateHandler } = require('../middlewares/validate.handler');
 const { validatePassportAuth } = require('../middlewares/auth.handler');
+
+const AuthService = require('../services/auth.service');
+const service = new AuthService();
 
 router.post(
   '/login',
@@ -14,16 +15,8 @@ router.post(
   async (req, res, next) => {
     try {
       const user = req.user;
-      const payload = {
-        sub: user.id,
-        email: user.email,
-        role: user.role,
-      };
-      const token = signToken(payload);
-      res.json({
-        user,
-        token,
-      });
+      const response = await service.userToken(user);
+      res.json(response);
     } catch (error) {
       next(error);
     }
@@ -36,20 +29,36 @@ router.post(
   async (req, res, next) => {
     try {
       const user = req.user;
-      const payload = {
-        sub: user.id,
-        email: user.email,
-        role: user.role,
-      }
-      const token = signToken(payload);
-      res.json({
-        user,
-        token,
-      });
+      const response = await service.userToken(user);
+      res.json(response);
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 );
+router.post(
+  '/recovery',
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const response = await service.recoveryPassword(body);
+      res.json(response)
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+router.put(
+  '/recovery/password',
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const response = await service.updateRecoveryPassword(body);
+      res.json(response);
+    } catch (error) {
+      next(error);
+    }
+  },
+)
 
 module.exports = router;
